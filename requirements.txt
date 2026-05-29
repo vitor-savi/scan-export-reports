@@ -1,0 +1,6 @@
+oracledb
+openpyxl
+tqdm
+pandas
+pyodbc
+python-dotenv
