@@ -8,7 +8,7 @@ IF NOT EXIST "C:\oracle" (
 
 	md "C:\oracle"
 
-	xcopy /e /y /q "\\brafps01.corp2000.org\Share\SCSC\Sistema\MyScanSource\oracle" "C:\oracle"
+	xcopy /e /y /q "\\server\Share\SCSC\Sistema\MyScanSource\oracle" "C:\oracle"
 
 	echo "Copia dos arquivos concluidas, iniciando programa de criacao de usuarios"
 ) ELSE (
