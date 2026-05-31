@@ -216,3 +216,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# -----------------------------
+# Project output and sensitive
+# -----------------------------
+# Arquivos de ambiente
+.env
+
+# Arquivos de saída e exportação
+*.csv
+*.xlsx
+*.xls
+*.xlsm
+
+# Logs e checkpoints
+*.log
+checkpoint.txt
+
+# Arquivos gerados por usuários (exportados temporariamente)
+output_*.csv
+relatorio*.xlsx
+
