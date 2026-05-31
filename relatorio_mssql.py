@@ -1,24 +1,46 @@
 import pandas as pd
 import pyodbc
 import os
+import sys
+import getpass
+from config import (
+    MSSQL_SERVER,
+    MSSQL_DATABASE,
+    MSSQL_TABLE,
+    MSSQL_OUTPUT_FILE,
+    MSSQL_CHUNK_SIZE,
+    MSSQL_TRUSTED_CONNECTION
+)
 
 # ==============================
 # CONFIGURAÇÕES
 # ==============================
 
-SERVER = 'server_name'
-DATABASE = 'database_name'
-TABLE = 'table_name'
-OUTPUT_FILE = 'output_file.csv'
+SERVER = MSSQL_SERVER
+DATABASE = MSSQL_DATABASE
+TABLE = MSSQL_TABLE
+OUTPUT_FILE = MSSQL_OUTPUT_FILE
+CHUNK_SIZE = MSSQL_CHUNK_SIZE
 
-CHUNK_SIZE = 100000  
-
-CONN_STR = (
-    f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-    f'SERVER={SERVER};'
-    f'DATABASE={DATABASE};'
-    'Trusted_Connection=yes;'
-)
+# Construir string de conexão
+if MSSQL_TRUSTED_CONNECTION.lower() == "yes":
+    CONN_STR = (
+        f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+        f'SERVER={SERVER};'
+        f'DATABASE={DATABASE};'
+        'Trusted_Connection=yes;'
+    )
+else:
+    print("Autenticação por credenciais:")
+    user = input("Usuário SQL Server: ")
+    password = getpass.getpass("Senha SQL Server: ")
+    CONN_STR = (
+        f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+        f'SERVER={SERVER};'
+        f'DATABASE={DATABASE};'
+        f'UID={user};'
+        f'PWD={password};'
+    )
 
 # ==============================
 # CONEXÃO
@@ -32,22 +54,9 @@ conn = pyodbc.connect(CONN_STR)
 
 query = f"""
 SELECT
-	USR_CODIGO,
-	USR_NOME,
-	GRUPO_ID,
-	GRUPO_CODIGO,
-	GRUPO_NOME,
-	REGRA_ID,
-	REGRA_DESCRICAO,
-	ROTINA_NOME,
-	MENU_ACESSA,
-	ROTINA_DESCRICAO,
-	ROTINA_OPCAO,
-	ROTINA_ACESSA,
-	ROTINA_ORDEM,
-	ROTINA_FUNCAO_MENU
+	*
 FROM
-	DATABASE.dbo.TABLE
+	{DATABASE}.dbo.{TABLE}
 """
 
 # ==============================

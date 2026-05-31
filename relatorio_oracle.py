@@ -6,28 +6,36 @@ import logging
 from tqdm import tqdm
 from openpyxl import Workbook
 import sys
+from config import (
+    ORACLE_CLIENT_PATH,
+    ORACLE_DSN,
+    ORACLE_USER,
+    ORACLE_PASSWORD,
+    ORACLE_OUTPUT_FILE,
+    ORACLE_LOG_FILE,
+    ORACLE_CHECKPOINT_FILE,
+    ORACLE_FETCH_SIZE,
+    ORACLE_MAX_RETRIES,
+    ORACLE_RETRY_WAIT
+)
 
 # =========================
 # CONFIGURAÇÕES
 # =========================
 
-ORACLE_CLIENT_PATH = r"C:\oracle\instantclient_23_9"
-
-DSN = "server:port/database"
-
-QUERY = """
+QUERY = f"""
 SELECT A.DATA, A.REVIDE, A.PEDIDO
     FROM SCHEMA.TABLE A
 ORDER BY DATANF DESC
 """
 
-FETCH_SIZE = 5000
-CHECKPOINT_FILE = "checkpoint.txt"
-OUTPUT_FILE = "relatorio.xlsx"
-LOG_FILE = "console.log"
+FETCH_SIZE = ORACLE_FETCH_SIZE
+CHECKPOINT_FILE = ORACLE_CHECKPOINT_FILE
+OUTPUT_FILE = ORACLE_OUTPUT_FILE
+LOG_FILE = ORACLE_LOG_FILE
 
-MAX_RETRIES = 5
-RETRY_WAIT = 30
+MAX_RETRIES = ORACLE_MAX_RETRIES
+RETRY_WAIT = ORACLE_RETRY_WAIT
 
 
 # =========================
@@ -48,8 +56,9 @@ oracledb.init_oracle_client(lib_dir=ORACLE_CLIENT_PATH)
 # CREDENCIAIS
 # =========================
 
-usuario = input("Usuário Oracle: ")
-senha = getpass.getpass("Senha Oracle: ")
+user = ORACLE_USER if ORACLE_USER else input("Usuário Oracle: ")
+password = ORACLE_PASSWORD if ORACLE_PASSWORD else getpass.getpass("Senha Oracle: ")
+dsn = ORACLE_DSN
 
 
 # =========================
@@ -60,9 +69,9 @@ def conectar():
     for tentativa in range(MAX_RETRIES):
         try:
             conn = oracledb.connect(
-                user=usuario,
-                password=senha,
-                dsn=DSN,
+                user=user,
+                password=password,
+                dsn=dsn,
                 expire_time=60
             )
             logging.info("Conexão estabelecida com sucesso.")
